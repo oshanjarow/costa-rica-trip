@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Fam Does Costa Rica</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Source+Sans+3:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --jungle: #1a3a2a;
+  --jungle-light: #2d5e3f;
+  --canopy: #3d7a52;
+  --terracotta: #c4603c;
+  --terracotta-light: #d4785a;
+  --sand: #e8dcc8;
+  --sand-light: #f2ece0;
+  --sand-pale: #f8f4ec;
+  --cream: #fdfaf5;
+  --golden: #d4a23a;
+  --ocean: #2a6b7c;
+  --bark: #5c4033;
+  --bark-light: #7a5a48;
+  --text: #2c2418;
+  --text-light: #6b5e4f;
+  --text-muted: #9a8e7f;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+[id] { scroll-margin-top: 56px; }
+
+body {
+  font-family: 'Source Sans 3', Georgia, serif;
+  background: var(--cream);
+  color: var(--text);
+  line-height: 1.6;
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+/* ===== PERSON SELECTOR MODAL ===== */
+.person-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(26, 58, 42, 0.85);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.person-modal-overlay.hidden { display: none; }
+
+.person-modal {
+  background: var(--cream);
+  border-radius: 14px;
+  padding: 40px 36px;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+}
+
+.person-modal h2 {
+  font-size: 1.5rem;
+  color: var(--jungle);
+  margin-bottom: 6px;
+}
+
+.person-modal p {
+  color: var(--text-light);
+  margin-bottom: 24px;
+  font-size: 0.95rem;
+}
+
+.person-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.person-btn {
+  background: var(--sand-light);
+  border: 2px solid transparent;
+  border-radius: 10px;
+  padding: 14px 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 0.95rem;
+  color: var(--text);
+}
+
+.person-btn:hover {
+  border-color: var(--terracotta);
+  background: var(--sand);
+}
+
+.person-btn .emoji { font-size: 1.4rem; display: block; margin-bottom: 4px; }
+.person-btn .name { font-weight: 600; }
+
+/* ===== USER BAR ===== */
+.user-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: var(--jungle);
+  color: var(--sand);
+  padding: 8px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.84rem;
+  transform: translateY(-100%);
+  transition: transform 0.3s ease;
+}
+
+.user-bar.visible { transform: translateY(0); }
+
+.user-bar button {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: var(--sand);
+  padding: 3px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.8rem;
+  transition: background 0.2s;
+}
+
+.user-bar button:hover { background: rgba(255,255,255,0.2); }
+
+/* ===== HEADER ===== */
+.page-header {
+  padding: 48px 24px 24px;
+  text-align: center;
+}
+
+.user-bar.visible ~ .page-header { padding-top: 80px; }
+
+.page-header h1 {
+  font-size: clamp(2rem, 5vw, 3rem);
+  color: var(--jungle);
+  margin-bottom: 8px;
+}
+
+.page-header .subtitle {
+  font-size: 1rem;
+  color: var(--text-light);
+  font-weight: 300;
+}
+
+/* ===== SIDE NAV ===== */
+.side-nav {
+  position: fixed;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 90;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+  padding: 8px 0;
+}
+
+.side-nav a {
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  text-decoration: none;
+  padding: 8px 14px 8px 16px;
+  border-left: 2px solid var(--sand);
+  transition: all 0.25s ease;
+  display: block;
+}
+
+.side-nav a:hover {
+  color: var(--jungle);
+  border-left-color: var(--jungle-light);
+}
+
+.side-nav a.active {
+  color: var(--jungle);
+  border-left-color: var(--terracotta);
+  font-weight: 600;
+}
+
+@media (max-width: 1080px) {
+  .side-nav { display: none; }
+}
+
+/* ===== ITINERARY SECTION ===== */
+.itin-section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px 32px;
+}
+
+.itin-header {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.itin-header h2 {
+  font-size: 1.3rem;
+  color: var(--jungle);
+  margin-bottom: 4px;
+}
+
+.itin-header p {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  font-weight: 300;
+}
+
+.itin-toggle {
+  display: flex;
+  flex-wrap: wrap;
+  background: var(--sand-light);
+  border-radius: 10px;
+  padding: 3px;
+  max-width: 520px;
+  margin: 0 auto 20px;
+}
+
+.itin-toggle-btn {
+  flex: 1;
+  padding: 10px 16px;
+  border: none;
+  background: transparent;
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.itin-toggle-btn.active {
+  background: var(--cream);
+  color: var(--jungle);
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+}
+
+.itin-panel { display: none; }
+.itin-panel.active { display: block; }
+
+.day-list {
+  display: grid;
+  gap: 0;
+}
+
+.day-item {
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+  font-size: 0.92rem;
+}
+
+.day-item:last-child { border-bottom: none; }
+
+.day-num {
+  font-weight: 600;
+  color: var(--terracotta);
+  flex-shrink: 0;
+  width: 44px;
+  font-size: 0.84rem;
+}
+
+.day-desc {
+  color: var(--text);
+}
+
+.day-desc .slot {
+  color: var(--terracotta);
+  font-style: italic;
+}
+
+.day-lodging {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.day-lodging a {
+  color: var(--ocean);
+  text-decoration: none;
+}
+
+.day-lodging a:hover {
+  text-decoration: underline;
+}
+
+.day-logistics {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.day-suggest {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-style: italic;
+  margin-top: 1px;
+  opacity: 0.7;
+}
+
+.itin-flex-note {
+  font-size: 0.84rem;
+  color: var(--ocean);
+  font-style: italic;
+  margin-top: 10px;
+  padding-left: 56px;
+}
+
+.itin-divider {
+  border: none;
+  border-top: 1px solid rgba(0,0,0,0.08);
+  margin: 32px 0 0;
+}
+
+/* ===== COLUMNS HEADING ===== */
+.columns-heading {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px 12px;
+  text-align: center;
+}
+
+.columns-heading h2 {
+  font-size: 1.3rem;
+  color: var(--jungle);
+  margin-bottom: 4px;
+}
+
+.columns-heading p {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  font-weight: 300;
+}
+
+/* ===== TWO COLUMN LAYOUT ===== */
+.columns-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px 24px 48px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  align-items: start;
+}
+
+.column {
+  min-width: 0;
+}
+
+.column-header {
+  padding-bottom: 12px;
+  margin-bottom: 16px;
+  border-bottom: 2px solid var(--jungle);
+}
+
+.column-header h2 {
+  font-size: 1.4rem;
+  color: var(--jungle);
+  margin-bottom: 2px;
+}
+
+.column-header .column-sub {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-weight: 300;
+}
+
+/* ===== ACTIVITY ROWS ===== */
+.activity-item {
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+.activity-item:last-child { border-bottom: none; }
+
+.activity-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.activity-info { flex: 1; min-width: 0; }
+
+.activity-info h4 {
+  font-size: 0.98rem;
+  color: var(--text);
+  font-weight: 600;
+  margin-bottom: 2px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.activity-link {
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--ocean);
+  text-decoration: none;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  opacity: 0.7;
+  transition: opacity 0.15s ease;
+}
+
+.activity-link:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
+
+.activity-info .desc {
+  font-size: 0.84rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+
+.vote-area {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+
+.vote-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: 1.5px solid var(--sand);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.vote-btn:hover {
+  border-color: var(--terracotta);
+  color: var(--terracotta);
+}
+
+.vote-btn.voted {
+  background: var(--terracotta);
+  color: white;
+  border-color: var(--terracotta);
+}
+
+.vote-btn svg {
+  width: 16px;
+  height: 16px;
+  stroke-width: 2;
+  fill: none;
+  stroke: currentColor;
+}
+
+.vote-btn.voted svg {
+  fill: currentColor;
+}
+
+.vote-count {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--terracotta);
+  min-width: 14px;
+  text-align: center;
+}
+
+.voters-row {
+  display: flex;
+  gap: 4px;
+  margin-top: 5px;
+  flex-wrap: wrap;
+}
+
+.voter-chip {
+  font-size: 0.68rem;
+  padding: 1px 7px;
+  border-radius: 10px;
+  background: var(--sand-light);
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* ===== ACTIVITY LOGISTICS ===== */
+.activity-logistics {
+  display: flex;
+  gap: 12px;
+  margin-top: 4px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.activity-logistics span {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.activity-logistics svg {
+  width: 12px;
+  height: 12px;
+  stroke: var(--text-muted);
+  fill: none;
+  stroke-width: 2;
+  flex-shrink: 0;
+}
+
+/* ===== NOTES ===== */
+.notes-section {
+  margin-top: 8px;
+}
+
+.note-item {
+  font-size: 0.82rem;
+  color: var(--text-light);
+  padding: 4px 0;
+  line-height: 1.4;
+}
+
+.note-item strong {
+  color: var(--terracotta);
+  font-weight: 600;
+}
+
+.add-note-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 0.76rem;
+  cursor: pointer;
+  padding: 4px 0;
+  opacity: 0.6;
+  transition: opacity 0.15s;
+}
+
+.add-note-btn:hover {
+  opacity: 1;
+}
+
+.note-input-row {
+  display: flex;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.note-input-row input {
+  flex: 1;
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 0.84rem;
+  padding: 5px 8px;
+  border: 1.5px solid var(--sand);
+  border-radius: 6px;
+  background: var(--cream);
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.note-input-row input:focus {
+  border-color: var(--ocean);
+}
+
+.note-input-row button {
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 0.78rem;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.note-save-btn {
+  background: var(--jungle);
+  color: var(--cream);
+}
+
+.note-cancel-btn {
+  background: var(--sand-light);
+  color: var(--text-muted);
+}
+
+/* ===== COSTS SECTION ===== */
+.costs-section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px 40px;
+}
+
+.costs-heading {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.costs-heading h2 {
+  font-size: 1.3rem;
+  color: var(--jungle);
+  margin-bottom: 4px;
+}
+
+.costs-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.cost-card {
+  background: white;
+  border: 1px solid var(--sand);
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.cost-card h3 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1rem;
+  color: var(--jungle);
+  margin-bottom: 6px;
+}
+
+.cost-card .cost-amount {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--terracotta);
+  margin-bottom: 6px;
+}
+
+.cost-card .cost-note {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  font-weight: 300;
+  line-height: 1.4;
+}
+
+@media (max-width: 700px) {
+  .costs-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 420px) {
+  .costs-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===== ARCHIVE SECTION ===== */
+.archive-section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px 48px;
+}
+
+.archive-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: 1px solid var(--sand);
+  border-radius: 8px;
+  padding: 10px 16px;
+  cursor: pointer;
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.archive-toggle:hover {
+  border-color: var(--bark-light);
+  color: var(--text-light);
+}
+
+.archive-toggle svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.archive-toggle.open svg {
+  transform: rotate(90deg);
+}
+
+.archive-content {
+  display: none;
+  padding-top: 20px;
+}
+
+.archive-content.open {
+  display: block;
+}
+
+.archive-content .column-header {
+  border-bottom-color: var(--bark-light);
+}
+
+.archive-itin-section {
+  margin-bottom: 28px;
+}
+
+.archive-itin-section h3 {
+  font-size: 1rem;
+  color: var(--bark);
+  margin-bottom: 8px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 700px) {
+  .columns-wrapper {
+    grid-template-columns: 1fr;
+    gap: 32px;
+    padding: 16px 18px 40px;
+  }
+
+  .person-modal { padding: 32px 20px; }
+
+  .itin-toggle { max-width: 100%; flex-wrap: wrap; }
+}
+</style>
+</head>
+<body>
+
+<!-- Person Selector Modal -->
+<div class="person-modal-overlay" id="personModal">
+  <div class="person-modal">
+    <h2>Who are you?</h2>
+    <p>Pick yourself so we can track your votes.</p>
+    <div class="person-buttons">
+      <button class="person-btn" onclick="selectPerson('Oshan')">
+        <span class="emoji">🌿</span>
+        <span class="name">Oshan</span>
+      </button>
+      <button class="person-btn" onclick="selectPerson('Sister')">
+        <span class="emoji">🌺</span>
+        <span class="name">Sister</span>
+      </button>
+      <button class="person-btn" onclick="selectPerson('Partner')">
+        <span class="emoji">🦜</span>
+        <span class="name">Partner</span>
+      </button>
+      <button class="person-btn" onclick="selectPerson('Mom')">
+        <span class="emoji">🌅</span>
+        <span class="name">Mom</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- User Bar -->
+<div class="user-bar" id="userBar">
+  <span id="userBarName"></span>
+  <button onclick="switchPerson()">Switch</button>
+</div>
+
+<!-- Header -->
+<div class="page-header">
+  <h1>The Fam Does Costa Rica</h1>
+  <p class="subtitle">Late Dec 2026 – Early Jan 2027</p>
+</div>
+
+<nav class="side-nav" id="sideNav">
+  <a href="#itineraries" data-section="itineraries">Itineraries</a>
+  <a href="#activities" data-section="activities">Activities</a>
+  <a href="#costs" data-section="costs">Costs</a>
+</nav>
+
+<!-- Itineraries -->
+<div class="itin-section" id="itineraries">
+  <div class="itin-header">
+    <h2>Possible Itineraries</h2>
+  </div>
+
+  <div class="itin-toggle">
+    <button class="itin-toggle-btn active" onclick="switchItin('A', this)">Monteverde + Uvita</button>
+    <button class="itin-toggle-btn" onclick="switchItin('B', this)">Uvita Only</button>
+  </div>
+
+  <div class="itin-panel active" id="itinA">
+    <div class="day-list">
+      <div class="day-item"><span class="day-num">Day 1</span><span class="day-desc">Fly NYC → San José. Drive 3.5–4 hrs to Monteverde.<span class="day-logistics">Pick up rental car</span><span class="day-lodging">Check into: <a href="https://www.lospinos.net/rooms-rates/" target="_blank">Family cabin at Los Piños</a></span></span></div>
+      <div class="day-item"><span class="day-num">Day 2</span><span class="day-desc"><span class="slot">Monteverde Activity A</span><span class="day-suggest">e.g. Cloud forest reserve</span></span></div>
+      <div class="day-item"><span class="day-num">Day 3</span><span class="day-desc"><span class="slot">Monteverde Activity B</span><span class="day-suggest">e.g. Hanging bridges &amp; ziplines or coffee tour</span></span></div>
+      <div class="day-item"><span class="day-num">Day 4</span><span class="day-desc">Drive Monteverde → Uvita (4.5–5.5 hours)<span class="day-lodging">Check into: <a href="https://www.airbnb.com/rooms/1451557084680510452" target="_blank">Airbnb</a></span></span></div>
+      <div class="day-item"><span class="day-num">Day 5</span><span class="day-desc"><span class="slot">Uvita Activity A</span><span class="day-suggest">e.g. Whale Tail walk + beach</span></span></div>
+      <div class="day-item"><span class="day-num">Day 6</span><span class="day-desc"><span class="slot">Uvita Activity B</span><span class="day-suggest">e.g. Corcovado National Park</span></span></div>
+      <div class="day-item"><span class="day-num">Day 7</span><span class="day-desc"><span class="slot">Uvita Activity C</span><span class="day-suggest">e.g. Whale watching tour</span></span></div>
+      <div class="day-item"><span class="day-num">Day 8</span><span class="day-desc"><span class="slot">Uvita Activity D</span><span class="day-suggest">e.g. Snorkeling at Caño Island</span></span></div>
+      <div class="day-item"><span class="day-num">Day 9</span><span class="day-desc">Drive 4hrs back to San José<span class="day-lodging">Check into: Airport hotel</span></span></div>
+      <div class="day-item"><span class="day-num">Day 10</span><span class="day-desc">Fly home<span class="day-logistics">Return rental car</span></span></div>
+    </div>
+  </div>
+
+  <div class="itin-panel" id="itinB">
+    <div class="day-list">
+      <div class="day-item"><span class="day-num">Day 1</span><span class="day-desc">Fly NYC → San José. Eat well, sleep nearby.<span class="day-logistics">Pick up rental car</span><span class="day-lodging">Check into: Airport hotel</span></span></div>
+      <div class="day-item"><span class="day-num">Day 2</span><span class="day-desc">Drive ~5hrs to Uvita. Dinner at Scala.<span class="day-lodging">Check into: <a href="https://www.airbnb.com/rooms/1451557084680510452" target="_blank">Airbnb</a></span></span></div>
+      <div class="day-item"><span class="day-num">Day 3</span><span class="day-desc"><span class="slot">Uvita Activity A</span><span class="day-suggest">e.g. Whale Tail walk + beach</span></span></div>
+      <div class="day-item"><span class="day-num">Day 4</span><span class="day-desc"><span class="slot">Uvita Activity B</span><span class="day-suggest">e.g. Corcovado National Park</span></span></div>
+      <div class="day-item"><span class="day-num">Day 5</span><span class="day-desc"><span class="slot">Uvita Activity C</span><span class="day-suggest">e.g. Whale watching tour</span></span></div>
+      <div class="day-item"><span class="day-num">Day 6</span><span class="day-desc"><span class="slot">Uvita Activity D</span><span class="day-suggest">e.g. Snorkeling at Caño Island</span></span></div>
+      <div class="day-item"><span class="day-num">Day 7</span><span class="day-desc"><span class="slot">Uvita Activity E</span><span class="day-suggest">e.g. Beach day or spa</span></span></div>
+      <div class="day-item"><span class="day-num">Day 8</span><span class="day-desc">Drive 4hrs back to San José<span class="day-lodging">Check into: Airport hotel</span></span></div>
+      <div class="day-item"><span class="day-num">Day 9</span><span class="day-desc">Fly home<span class="day-logistics">Return rental car</span></span></div>
+    </div>
+  </div>
+
+  <hr class="itin-divider">
+</div>
+
+<!-- Activity Voting -->
+<div class="columns-heading" id="activities">
+  <h2>Activity Voting</h2>
+  <p>Let the best activities win.</p>
+</div>
+<div class="columns-wrapper">
+
+  <!-- MONTEVERDE COLUMN -->
+  <div class="column" id="monteverdeColumn">
+    <div class="column-header">
+      <h2>Monteverde</h2>
+      <div class="column-sub">Cloud forest in the mountains. Cooler, misty, lush. Only if we do Itinerary A.</div>
+    </div>
+    <div id="monteverdeActivities"></div>
+  </div>
+
+  <!-- UVITA COLUMN -->
+  <div class="column" id="uvitaColumn">
+    <div class="column-header">
+      <h2>Uvita</h2>
+      <div class="column-sub">Laid-back beach town on the central Pacific coast. Our home base. Staying in Uvita means our own quiet, spacious place tucked into the hillside — not in the middle of a busy town.</div>
+    </div>
+    <div id="uvitaActivities"></div>
+  </div>
+
+</div>
+
+<!-- Major Costs -->
+<div class="costs-section" id="costs">
+  <div class="costs-heading">
+    <h2>Major Costs</h2>
+  </div>
+  <div class="costs-grid">
+    <div class="cost-card">
+      <h3>Flights</h3>
+      <div class="cost-amount">TBD</div>
+      <div class="cost-note">Round-trip NYC → San José, 4 tickets</div>
+    </div>
+    <div class="cost-card">
+      <h3>Accommodations</h3>
+      <div class="cost-amount">$4,303</div>
+      <div class="cost-note">Los Piños $803 (3 nights) + Uvita Airbnb $3,500 (5 nights)</div>
+    </div>
+    <div class="cost-card">
+      <h3>Car Rental</h3>
+      <div class="cost-amount">$1,300</div>
+      <div class="cost-note">SUV/4WD for full trip</div>
+    </div>
+    <div class="cost-card">
+      <h3>Activity Fees</h3>
+      <div class="cost-amount">~$1,560</div>
+      <div class="cost-note">Estimate for 4 people — depends on which activities win the vote</div>
+    </div>
+  </div>
+</div>
+
+<!-- Archive -->
+<div class="archive-section">
+  <button class="archive-toggle" onclick="toggleArchive(this)">
+    <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+    Retired ideas — La Fortuna itineraries &amp; activities
+  </button>
+  <div class="archive-content" id="archiveContent">
+
+    <div class="archive-itin-section">
+      <h3>11 days — La Fortuna + Uvita</h3>
+      <div class="day-list">
+        <div class="day-item"><span class="day-num">Day 1</span><span class="day-desc">Fly NYC → San José. Drive 3hrs to La Fortuna or sleep near airport.<span class="day-logistics">Pick up rental car</span></span></div>
+        <div class="day-item"><span class="day-num">Day 2</span><span class="day-desc"><span class="slot">La Fortuna Activity A</span> — hot springs day<span class="day-suggest">e.g. Tabacón or EcoTermales</span><span class="day-lodging">Check into: <span class="slot">La Fortuna lodging (TBD)</span></span></span></div>
+        <div class="day-item"><span class="day-num">Day 3</span><span class="day-desc"><span class="slot">La Fortuna Activity B</span> — adventure day<span class="day-suggest">e.g. Ziplining or Rio Celeste hike</span></span></div>
+        <div class="day-item"><span class="day-num">Day 4</span><span class="day-desc">Drive La Fortuna → Uvita (5.5 hours)<span class="day-lodging">Check into: <a href="https://www.airbnb.com/rooms/1451557084680510452" target="_blank">Airbnb</a></span></span></div>
+        <div class="day-item"><span class="day-num">Day 5</span><span class="day-desc"><span class="slot">Uvita Activity A</span></span></div>
+        <div class="day-item"><span class="day-num">Day 6</span><span class="day-desc"><span class="slot">Uvita Activity B</span></span></div>
+        <div class="day-item"><span class="day-num">Day 7</span><span class="day-desc"><span class="slot">Uvita Activity C</span></span></div>
+        <div class="day-item"><span class="day-num">Day 8</span><span class="day-desc"><span class="slot">Uvita Activity D</span></span></div>
+        <div class="day-item"><span class="day-num">Day 9</span><span class="day-desc"><span class="slot">Uvita Activity E</span></span></div>
+        <div class="day-item"><span class="day-num">Day 10</span><span class="day-desc">Drive 4hrs back to San José<span class="day-lodging">Check into: Airport hotel</span></span></div>
+        <div class="day-item"><span class="day-num">Day 11</span><span class="day-desc">Fly home<span class="day-logistics">Return rental car</span></span></div>
+      </div>
+    </div>
+
+    <div class="archive-itin-section">
+      <h3>9 days — La Fortuna + Uvita</h3>
+      <div class="day-list">
+        <div class="day-item"><span class="day-num">Day 1</span><span class="day-desc">Fly NYC → San José (early arrival). Drive 3hrs to La Fortuna.<span class="day-logistics">Pick up rental car</span><span class="day-lodging">Check into: <span class="slot">La Fortuna lodging (TBD)</span></span></span></div>
+        <div class="day-item"><span class="day-num">Day 2</span><span class="day-desc"><span class="slot">La Fortuna Activity A</span><span class="day-suggest">e.g. Tabacón or EcoTermales + ziplining</span></span></div>
+        <div class="day-item"><span class="day-num">Day 3</span><span class="day-desc">Drive La Fortuna → Uvita (5.5 hours)<span class="day-lodging">Check into: <a href="https://www.airbnb.com/rooms/1451557084680510452" target="_blank">Airbnb</a></span></span></div>
+        <div class="day-item"><span class="day-num">Day 4</span><span class="day-desc"><span class="slot">Uvita Activity A</span></span></div>
+        <div class="day-item"><span class="day-num">Day 5</span><span class="day-desc"><span class="slot">Uvita Activity B</span></span></div>
+        <div class="day-item"><span class="day-num">Day 6</span><span class="day-desc"><span class="slot">Uvita Activity C</span></span></div>
+        <div class="day-item"><span class="day-num">Day 7</span><span class="day-desc"><span class="slot">Uvita Activity D</span></span></div>
+        <div class="day-item"><span class="day-num">Day 8</span><span class="day-desc">Drive 4hrs back to San José<span class="day-lodging">Check into: Airport hotel</span></span></div>
+        <div class="day-item"><span class="day-num">Day 9</span><span class="day-desc">Fly home<span class="day-logistics">Return rental car</span></span></div>
+      </div>
+    </div>
+
+    <div class="column-header">
+      <h2>La Fortuna Activities</h2>
+      <div class="column-sub">Volcanos, hot springs, rainforest.</div>
+    </div>
+    <div id="arenalActivities"></div>
+
+  </div>
+</div>
+
+<script>
+// ===== DATA =====
+const UVITA_ACTIVITIES = [
+  { id: "corcovado", name: "Corcovado National Park", desc: "Full-day guided tour. Protected rainforest peninsula — often called the best national park in the world.", url: "https://www.visitcostarica.com/where-to-go/protected-areas/corcovado-national-park", travel: "1.5 hrs by boat each way", duration: "Full day (7 AM – 4 PM)", cost: "~$145/person" },
+  { id: "ma-park", name: "Manuel Antonio National Park", desc: "Beaches, wildlife, forest trails. Most popular park in Costa Rica.", url: "https://www.visitcostarica.com/where-to-go/protected-areas/manuel-antonio-national-park", travel: "45 min drive", duration: "3–5 hrs in park", cost: "~$18/person" },
+  { id: "cano-island", name: "Snorkeling at Caño Island", desc: "Boat to a biological reserve. Some of the best snorkeling in Costa Rica.", url: "https://www.bahiaaventuras.com/tours/cano-island/", travel: "Departs from Uvita beach", duration: "Full morning (~7 AM – 2:30 PM)", cost: "~$150/person" },
+  { id: "rainmaker", name: "Rainmaker Reserve", desc: "1.5-mile trail with suspension bridges through old-growth rainforest.", url: "https://rainmakercostarica.com/", travel: "1 hr 15 min drive", duration: "2–3 hrs on-site", cost: "~$23/person" },
+  { id: "marino-ballena", name: "Marino Ballena National Park / Whale Tail Walk", desc: "Whale-tail-shaped sandbar you can walk at low tide. Must time with tides. Go at sunset. Also has beautiful beaches: Playa Uvita, Playa Colonia, Playa Ballena, and Playa Piñuelas.", url: "https://www.visitcostarica.com/where-to-go/protected-areas/ballena-national-marine-park", travel: "5–10 min drive", duration: "1.5–2 hrs", cost: "~$7/person" },
+  { id: "whale-tour", name: "Whale Watching Tour", desc: "Humpback whales migrate through Dec–April. Morning boat tour with snorkeling stop.", url: "https://www.bahiaaventuras.com/tours/whale-dolphin-combo-tour/", travel: "Departs from Uvita beach", duration: "3–4 hrs", cost: "~$80/person" },
+  { id: "hacienda-baru", name: "Hacienda Barú", desc: "Wildlife refuge — sloths, monkeys, toucans. Guided or self-led walking tours.", url: "https://www.haciendabaru.com/en/", travel: "20 min drive", duration: "2–3 hrs" },
+  { id: "mangrove-tour", name: "Sierpe River Mangrove Boat Tour", desc: "Boat through mangrove forests. Crocodiles, monkeys, exotic birds.", url: "https://sierpemangrovetour.com/en/", travel: "1 hr drive to Sierpe dock", duration: "3–4 hrs on the water" },
+  { id: "spa-day", name: "Spa Day", desc: "Alegría Soul Spa or the spa at Oxygen Jungle Villas.", url: "http://alegriasoulspa.com/", travel: "20 min drive to Dominical", duration: "1–3 hrs" },
+  { id: "beach-day", name: "Beach Days", desc: "Playa Uvita (dark sand, national park), Playa Hermosa, Dominicalito.", travel: "5–15 min drive" },
+];
+
+const ARENAL_ACTIVITIES = [
+  { id: "tabacon", name: "Tabacón Hot Springs", desc: "Famous luxury hot springs at the base of Arenal Volcano.", url: "https://www.tabacon.com/", travel: "15 min drive", duration: "3–4 hrs" },
+  { id: "ecotermales", name: "EcoTermales Hot Springs", desc: "Smaller, less crowded alternative. Caps visitors for a quieter experience.", url: "https://ecotermalesfortuna.cr/en/home/", travel: "10 min drive", duration: "2–3 hrs" },
+  { id: "safari-float", name: "Safari River Float", desc: "Gentle float down the Peñas Blancas River. Monkeys, birds, iguanas, caiman.", url: "https://canoa-aventura.com/safari-float-river-tour-in-la-fortuna/", travel: "30 min drive to put-in", duration: "~3.5 hrs total" },
+  { id: "rio-celeste", name: "Rio Celeste Waterfall Hike", desc: "Bright-blue waterfall in Tenorio Volcano National Park.", url: "https://www.visitcostarica.com/where-to-go/protected-areas/tenorio-volcano-national-park", travel: "1.5–2 hr drive", duration: "3–4 hrs hiking (full day with drive)" },
+  { id: "arenal-volcano", name: "Arenal Volcano", desc: "Iconic active volcano. Hiking trails with dramatic views.", url: "https://www.visitcostarica.com/where-to-go/protected-areas/arenal-volcano-national-park", travel: "20 min drive", duration: "2–3 hrs" },
+  { id: "skytrek", name: "Ziplining — Sky Adventures (SkyTrek)", desc: "Seven zipline cables between mountain peaks, longest over 750m. Starts with an aerial tram ride up with views of Arenal Volcano and lake.", url: "https://skyadventures.travel/ziplines/", travel: "20 min drive", duration: "~2.5 hrs" },
+];
+
+const MONTEVERDE_ACTIVITIES = [
+  { id: "mv-cloud-forest", name: "Monteverde Cloud Forest Reserve", desc: "Costa Rica's most famous cloud forest. Three trail circuits through mossy, misty old-growth forest. Book time slots in advance — they cap at 26 people.", url: "https://cloudforestmonteverde.com/", travel: "10 min drive from Santa Elena", duration: "2–3 hrs per circuit", cost: "~$29/person" },
+  { id: "mv-santa-elena", name: "Santa Elena Cloud Forest Reserve", desc: "Community-managed reserve. Higher elevation, fewer crowds, different birds. Run by the local high school since 1992.", url: "https://reservasantaelena.org/", travel: "15 min drive", duration: "2–3 hrs", cost: "~$18/person" },
+  { id: "mv-treetopia", name: "Treetopia Park", desc: "Seven ziplines up to 750m long plus six hanging bridges through the canopy. A gondola takes you up first, so no hiking to the start. Easier on the legs.", url: "https://treetopiapark.com/", travel: "15 min drive", duration: "4–5 hrs", cost: "~$129/person (explorer combo)" },
+  { id: "mv-selvatura", name: "Selvatura Park", desc: "13 ziplines including a 1km cable, a Tarzan swing, plus eight hanging bridges up to 157m long through the cloud forest. More rugged — you hike between platforms through the forest.", url: "https://www.selvatura.com/tours/", travel: "15 min drive", duration: "4–5 hrs", cost: "~$109/person (ziplines + bridges)" },
+  { id: "mv-night-tour", name: "Night Tour", desc: "Guided walk after dark with flashlights. Tree frogs, sleeping birds, insects, kinkajous.", url: "https://refugiomonteverdecr.com/tours/night-tour/", travel: "5–10 min drive", duration: "2–2.5 hrs", cost: "~$40/person" },
+  { id: "mv-coffee", name: "Coffee Farm Tour", desc: "Working specialty coffee farm. Seed-to-cup walkthrough, roastery visit, tasting of five varieties.", url: "https://cafedemonteverde.com/tour/", travel: "15 min drive", duration: "~2 hrs", cost: "~$45/person" },
+];
+
+// ===== STATE =====
+let currentPerson = localStorage.getItem('cr-trip-person');
+let votes = JSON.parse(localStorage.getItem('cr-trip-votes') || '{}');
+let notes = JSON.parse(localStorage.getItem('cr-trip-notes') || '{}');
+let openNoteInput = null; // tracks which activity has the input open
+
+// ===== PERSON SELECTION =====
+function selectPerson(name) {
+  currentPerson = name;
+  localStorage.setItem('cr-trip-person', name);
+  document.getElementById('personModal').classList.add('hidden');
+  document.getElementById('userBar').classList.add('visible');
+  updateUserBar();
+  renderAll();
+}
+
+function switchPerson() {
+  localStorage.removeItem('cr-trip-person');
+  currentPerson = null;
+  document.getElementById('personModal').classList.remove('hidden');
+  document.getElementById('userBar').classList.remove('visible');
+}
+
+function updateUserBar() {
+  const emojis = { Oshan: '🌿', Sister: '🌺', Partner: '🦜', Mom: '🌅' };
+  document.getElementById('userBarName').textContent = `${emojis[currentPerson] || ''} Voting as ${currentPerson}`;
+}
+
+// ===== VOTING =====
+function toggleVote(activityId) {
+  if (!currentPerson) return;
+  if (!votes[activityId]) votes[activityId] = [];
+
+  const idx = votes[activityId].indexOf(currentPerson);
+  if (idx === -1) {
+    votes[activityId].push(currentPerson);
+  } else {
+    votes[activityId].splice(idx, 1);
+  }
+
+  localStorage.setItem('cr-trip-votes', JSON.stringify(votes));
+  renderAll();
+}
+
+// ===== NOTES =====
+function showNoteInput(activityId) {
+  openNoteInput = activityId;
+  renderAll();
+  // focus the input after render
+  setTimeout(() => {
+    const input = document.getElementById('note-input-' + activityId);
+    if (input) input.focus();
+  }, 0);
+}
+
+function cancelNote() {
+  openNoteInput = null;
+  renderAll();
+}
+
+function saveNote(activityId) {
+  const input = document.getElementById('note-input-' + activityId);
+  if (!input || !input.value.trim() || !currentPerson) return;
+
+  if (!notes[activityId]) notes[activityId] = [];
+  notes[activityId].push({ person: currentPerson, text: input.value.trim() });
+  localStorage.setItem('cr-trip-notes', JSON.stringify(notes));
+  openNoteInput = null;
+  renderAll();
+}
+
+function handleNoteKeydown(e, activityId) {
+  if (e.key === 'Enter') saveNote(activityId);
+  if (e.key === 'Escape') cancelNote();
+}
+
+// ===== ITINERARY TOGGLE =====
+function switchItin(which, btn) {
+  document.querySelectorAll('.itin-toggle-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.itin-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('itin' + which).classList.add('active');
+}
+
+// ===== ARCHIVE TOGGLE =====
+function toggleArchive(btn) {
+  btn.classList.toggle('open');
+  document.getElementById('archiveContent').classList.toggle('open');
+}
+
+// ===== RENDER =====
+function renderActivityList(containerEl, activities) {
+  let html = '';
+
+  activities.forEach(act => {
+    const actVotes = votes[act.id] || [];
+    const hasVoted = currentPerson && actVotes.includes(currentPerson);
+    const count = actVotes.length;
+
+    const travelIcon = `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`;
+    const carIcon = `<svg viewBox="0 0 24 24"><path d="M5 17h2m10 0h2M3 11l1.5-5h15l1.5 5M3 11v6h18v-6M3 11h18"/><circle cx="7" cy="17" r="1"/><circle cx="17" cy="17" r="1"/></svg>`;
+
+    const costIcon = `<svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>`;
+
+    let logisticsHtml = '';
+    if (act.travel || act.duration || act.cost) {
+      logisticsHtml = `<div class="activity-logistics">`;
+      if (act.travel) logisticsHtml += `<span>${carIcon} ${act.travel}</span>`;
+      if (act.duration) logisticsHtml += `<span>${travelIcon} ${act.duration}</span>`;
+      if (act.cost) logisticsHtml += `<span>${costIcon} ${act.cost}</span>`;
+      logisticsHtml += `</div>`;
+    }
+
+    html += `
+      <div class="activity-item">
+        <div class="activity-top">
+          <div class="activity-info">
+            <h4>${act.name}${act.url ? `<a href="${act.url}" target="_blank" class="activity-link">see more ↗</a>` : ''}</h4>
+            <div class="desc">${act.desc}</div>
+            ${logisticsHtml}
+          </div>
+          <div class="vote-area">
+            ${count > 0 ? `<span class="vote-count">${count}</span>` : ''}
+            <button class="vote-btn ${hasVoted ? 'voted' : ''}" onclick="toggleVote('${act.id}')">
+              <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            </button>
+          </div>
+        </div>
+        ${actVotes.length > 0 ? `
+          <div class="voters-row">
+            ${actVotes.map(v => `<span class="voter-chip">${v}</span>`).join('')}
+          </div>
+        ` : ''}
+        <div class="notes-section">
+          ${(notes[act.id] || []).map(n => `<div class="note-item"><strong>${n.person}:</strong> ${n.text}</div>`).join('')}
+          ${openNoteInput === act.id ? `
+            <div class="note-input-row">
+              <input type="text" id="note-input-${act.id}" placeholder="Add a note..." onkeydown="handleNoteKeydown(event, '${act.id}')">
+              <button class="note-save-btn" onclick="saveNote('${act.id}')">Save</button>
+              <button class="note-cancel-btn" onclick="cancelNote()">Cancel</button>
+            </div>
+          ` : `
+            <button class="add-note-btn" onclick="showNoteInput('${act.id}')">+ add note</button>
+          `}
+        </div>
+      </div>
+    `;
+  });
+
+  containerEl.innerHTML = html;
+}
+
+function renderAll() {
+  renderActivityList(document.getElementById('uvitaActivities'), UVITA_ACTIVITIES);
+  renderActivityList(document.getElementById('arenalActivities'), ARENAL_ACTIVITIES);
+  renderActivityList(document.getElementById('monteverdeActivities'), MONTEVERDE_ACTIVITIES);
+}
+
+// ===== INIT =====
+document.addEventListener('DOMContentLoaded', () => {
+  if (currentPerson) {
+    document.getElementById('personModal').classList.add('hidden');
+    document.getElementById('userBar').classList.add('visible');
+    updateUserBar();
+  }
+  renderAll();
+
+  // Side nav scroll tracking
+  const sideNavLinks = document.querySelectorAll('.side-nav a');
+  const sections = ['itineraries', 'activities', 'costs'];
+
+  function updateSideNav() {
+    const scrollY = window.scrollY + window.innerHeight / 3;
+    let current = sections[0];
+    for (const id of sections) {
+      const el = document.getElementById(id);
+      if (el && el.offsetTop <= scrollY) current = id;
+    }
+    sideNavLinks.forEach(link => {
+      link.classList.toggle('active', link.dataset.section === current);
+    });
+  }
+
+  window.addEventListener('scroll', updateSideNav, { passive: true });
+  updateSideNav();
+});
+</script>
+</body>
+</html>
